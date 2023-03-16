@@ -1,10 +1,11 @@
 import math
 import time
+import numpy as np
 
 import cv2
-
+import pygame as pg
 from PygameGUI.Sprites import *
-from PygameGUI.Screen import Screen
+import PygameGUI.Screen as Screen
 from KUKA import YouBot
 
 deb = True
@@ -22,7 +23,7 @@ class GuiControl:
         if isinstance(robot, list):
             self.robots_num = len(robot)
             self.robots = robot
-            self.robot = KUKA(robot[0])
+            self.robot = YouBot(robot[0])
             self.curr_robot = 0
         else:
             self.robot = robot
@@ -146,7 +147,7 @@ class GuiControl:
         if self.curr_robot >= self.robots_num:
             self.curr_robot = 0
         if self.robots_num > 1:
-            self.robot = KUKA(self.robots[self.curr_robot])
+            self.robot = YouBot(self.robots[self.curr_robot])
             self.current_cam_mode = not self.current_cam_mode
             self.change_cam_mode()
 
@@ -501,3 +502,11 @@ class GuiControl:
         cv2.ellipse(self.arm_screen, cent_l, (m3_len, m3_len), 0, m3_range[0] + m2_range[1] - 90,
                     m3_range[1] + m2_range[1] - 90,
                     color, -1)
+
+
+if __name__ == "__main__":
+    robot = YouBot('192.168.88.21', ros=True, offline=True, camera_enable=True, advanced=False)
+    # robot = ['192.168.88.21', '192.168.88.22', '192.168.88.23', '192.168.88.24', '192.168.88.25']
+    sim = GuiControl(1200, 900, robot)
+    sim.run()
+
